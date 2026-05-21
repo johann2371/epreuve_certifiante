@@ -2,7 +2,7 @@ name: DIGITRANS-CM CI/CD Pipeline
 
 on:
   push:
-    branches: [ "dev", "main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -69,60 +69,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
 
-  # ÉTAPE 3 : DEPLOY DEV (sur push vers la branche 'dev')
-
-  deploy-dev:
-    name:  Deploy to DEV
-    runs-on: ubuntu-latest
-    needs: build-test-scan
-    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: af-south-1
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Terraform Deploy DEV
-        working-directory: ./infrastructure/terraform
-        run: |
-          terraform init
-          terraform apply -var-file="dev.tfvars" -auto-approve
-
-  # ÉTAPE 4 : DEPLOY TEST / UAT (sur Pull Request vers 'main')
-
-  deploy-test:
-    name:  Deploy to TEST (UAT)
-    runs-on: ubuntu-latest
-    needs: build-test-scan
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: af-south-1
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Terraform Deploy TEST
-        working-directory: ./infrastructure/terraform
-        run: |
-          terraform init
-          terraform apply -var-file="test.tfvars" -auto-approve
-
-
-  # ÉTAPE 5 : DEPLOY PROD (sur push vers 'main' après merge)
+  # ÉTAPE 3 : DEPLOY PROD (sur push vers 'main')
 
   deploy-prod:
     name:  Deploy to PROD
