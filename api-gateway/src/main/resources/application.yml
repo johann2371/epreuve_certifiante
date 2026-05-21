@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: erp-service
+          uri: http://erp-service:8081
+          predicates:
+            - Path=/api/erp/**
+          filters:
+            - AuthenticationFilter
+        - id: crm-service
+          uri: http://crm-service:8082
+          predicates:
+            - Path=/api/crm/**
+          filters:
+            - AuthenticationFilter
+        - id: supply-chain-service
+          uri: http://supply-chain-service:8083
+          predicates:
+            - Path=/api/supply/**
+          filters:
+            - AuthenticationFilter
+        - id: bi-service
+          uri: http://bi-service:8084
+          predicates:
+            - Path=/api/bi/**
+          filters:
+            - AuthenticationFilter
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970

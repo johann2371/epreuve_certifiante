@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - digitrans_net
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - digitrans_net
+    depends_on:
+      - erp-service
+      - crm-service
+      - supply-chain-service
+      - bi-service
+
+  erp-service:
+    build:
+      context: ./erp-service
+    container_name: erp-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+    ports:
+      - "8081:8081"
+    networks:
+      - digitrans_net
+    depends_on:
+      - postgres
+
+  crm-service:
+    build:
+      context: ./crm-service
+    container_name: crm-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/crm_db
+    ports:
+      - "8082:8082"
+    networks:
+      - digitrans_net
+    depends_on:
+      - postgres
+
+  supply-chain-service:
+    build:
+      context: ./supply-chain-service
+    container_name: supply-chain-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/supply_db
+    ports:
+      - "8083:8083"
+    networks:
+      - digitrans_net
+    depends_on:
+      - postgres
+
+  bi-service:
+    build:
+      context: ./bi-service
+    container_name: bi-service
+    environment:
+      - ERP_SERVICE_URL=http://erp-service:8081
+      - CRM_SERVICE_URL=http://crm-service:8082
+      - SUPPLY_SERVICE_URL=http://supply-chain-service:8083
+    ports:
+      - "8084:8084"
+    networks:
+      - digitrans_net
+    depends_on:
+      - erp-service
+      - crm-service
+      - supply-chain-service
+
+networks:
+  digitrans_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
