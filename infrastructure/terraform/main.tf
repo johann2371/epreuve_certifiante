@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "digitrans-terraform-state-johann"
+    key    = "prod/terraform.tfstate"
+    region = "eu-west-3"
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 }
