@@ -11,7 +11,7 @@ jobs:
   # ÉTAPE 1 : SECRET SCANNING (sur tous les événements)
 
   secret-scanning:
-    name: 🔐 Secret Scanning (Gitleaks + TruffleHog)
+    name:  Secret Scanning (Gitleaks + TruffleHog)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
   # ÉTAPE 2 : BUILD, TEST & SCAN (sur tous les événements)
 
   build-test-scan:
-    name: 🔨 Build, Test & Trivy Scan
+    name:  Build, Test & Trivy Scan
     runs-on: ubuntu-latest
     needs: secret-scanning
     strategy:
@@ -72,7 +72,7 @@ jobs:
   # ÉTAPE 3 : DEPLOY DEV (sur push vers la branche 'dev')
 
   deploy-dev:
-    name: 🚀 Deploy to DEV
+    name:  Deploy to DEV
     runs-on: ubuntu-latest
     needs: build-test-scan
     if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
@@ -98,7 +98,7 @@ jobs:
   # ÉTAPE 4 : DEPLOY TEST / UAT (sur Pull Request vers 'main')
 
   deploy-test:
-    name: 🧪 Deploy to TEST (UAT)
+    name:  Deploy to TEST (UAT)
     runs-on: ubuntu-latest
     needs: build-test-scan
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
@@ -125,7 +125,7 @@ jobs:
   # ÉTAPE 5 : DEPLOY PROD (sur push vers 'main' après merge)
 
   deploy-prod:
-    name: 🏭 Deploy to PROD
+    name:  Deploy to PROD
     runs-on: ubuntu-latest
     needs: build-test-scan
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
