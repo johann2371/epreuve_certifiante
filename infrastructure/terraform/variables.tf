@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "The AWS region to deploy to"
-  default     = "af-south-1"
+  default     = "eu-west-3"
 }
 
 variable "environment" {
