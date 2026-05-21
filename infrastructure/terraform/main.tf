@@ -23,7 +23,7 @@ data "aws_subnets" "default" {
 }
 
 # Security Group pour autoriser le trafic vers la Gateway (8080) et SSH (22)
-resource "aws_security_group" "digitrans_sg" {
+resource "aws_security_group" "digitrans_sgeg" {
   name        = "digitrans_sg_${var.environment}"
   description = "Security group for DIGITRANS-CM ${var.environment}"
   vpc_id      = data.aws_vpc.default.id
