@@ -72,7 +72,7 @@ resource "aws_instance" "digitrans_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   subnet_id     = data.aws_subnets.default.ids[0]
-  vpc_security_group_ids = [aws_security_group.digitrans_sg.id]
+  vpc_security_group_ids = [aws_security_group.digitrans_sgeg.id]
 
   # User data pour installer Docker et déployer l'application
   user_data = <<-EOF
