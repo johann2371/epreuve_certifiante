@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────────────────
+
   # ÉTAPE 1 : SECRET SCANNING (sur tous les événements)
 
   secret-scanning:
@@ -31,9 +31,8 @@ jobs:
           head: ${{ github.sha }}
           extra_args: --debug --only-verified
 
-  # ─────────────────────────────────────────────────────────────────────────────
   # ÉTAPE 2 : BUILD, TEST & SCAN (sur tous les événements)
-  # ─────────────────────────────────────────────────────────────────────────────
+
   build-test-scan:
     name: 🔨 Build, Test & Trivy Scan
     runs-on: ubuntu-latest
@@ -69,9 +68,9 @@ jobs:
           format: 'table'
           severity: 'CRITICAL,HIGH'
 
-  # ─────────────────────────────────────────────────────────────────────────────
+
   # ÉTAPE 3 : DEPLOY DEV (sur push vers la branche 'dev')
-  # ─────────────────────────────────────────────────────────────────────────────
+
   deploy-dev:
     name: 🚀 Deploy to DEV
     runs-on: ubuntu-latest
@@ -96,9 +95,8 @@ jobs:
           terraform init
           terraform apply -var-file="dev.tfvars" -auto-approve
 
-  # ─────────────────────────────────────────────────────────────────────────────
   # ÉTAPE 4 : DEPLOY TEST / UAT (sur Pull Request vers 'main')
-  # ─────────────────────────────────────────────────────────────────────────────
+
   deploy-test:
     name: 🧪 Deploy to TEST (UAT)
     runs-on: ubuntu-latest
@@ -123,9 +121,9 @@ jobs:
           terraform init
           terraform apply -var-file="test.tfvars" -auto-approve
 
-  # ─────────────────────────────────────────────────────────────────────────────
+
   # ÉTAPE 5 : DEPLOY PROD (sur push vers 'main' après merge)
-  # ─────────────────────────────────────────────────────────────────────────────
+
   deploy-prod:
     name: 🏭 Deploy to PROD
     runs-on: ubuntu-latest
